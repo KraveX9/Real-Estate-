@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realtor Aishat | Your Trusted Real Estate Partner</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind Configuration for Custom Brand Colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: '#0B132B',
+                        navyLight: '#1C2541',
+                        gold: '#D4AF37',
+                        goldHover: '#E5C158',
+                        light: '#F8F9FA',
+                        muted: '#9CA3AF',
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Inter"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0B132B; }
+        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 10px; }
+        
+        /* Smooth Reveal Animation */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.25, 1, 0.5, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        
+        /* Glassmorphism */
+        .glass-panel {
+            background: rgba(28, 37, 65, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Property Card Hover */
+        .property-card img { transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1); }
+        .property-card:hover img { transform: scale(1.08); }
+
+        /* Custom Cursor */
+        .cursor { width: 8px; height: 8px; background: #D4AF37; border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s, background 0.3s; mix-blend-mode: difference; }
+        .cursor-follower { width: 40px; height: 40px; border: 1px solid rgba(212, 175, 55, 0.5); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); transition: transform 0.1s; mix-blend-mode: difference; }
+    </style>
+</head>
+<body class="font-sans text-light bg-navy antialiased overflow-x-hidden selection:bg-gold selection:text-navy">
+
+    <!-- Custom Cursor -->
+    <div class="cursor hidden md:block"></div>
+    <div class="cursor-follower hidden md:block"></div>
+
+    <!-- FLOATING WHATSAPP BUTTON -->
+    <a href="https://wa.me/2348124191760?text=Hello%20Realtor%20Aishat,%20I'd%20like%20to%20make%20an%20enquiry." target="_blank" class="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-[0_0_20px_rgba(37,211,102,0.4)] hover:scale-110 transition-transform duration-300">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <!-- NAVIGATION -->
+    <nav class="fixed w-full z-40 transition-all duration-500" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex justify-between items-center h-24">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <div class="w-12 h-12 rounded-full border-2 border-gold flex items-center justify-center bg-navyLight shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+                        <span class="font-serif font-bold text-xl text-gold">RA</span>
+                    </div>
+                    <div>
+                        <span class="font-serif font-bold text-lg tracking-widest text-white block leading-tight">REALTOR AISHAT</span>
+                        <span class="text-[0.55rem] tracking-[0.3em] text-gold uppercase">Real Estate Services</span>
+                    </div>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-10 items-center">
+                    <a href="#home" class="text-muted hover:text-gold transition font-medium text-xs tracking-widest uppercase">Home</a>
+                    <a href="#properties" class="text-muted hover:text-gold transition font-medium text-xs tracking-widest uppercase">Properties</a>
+                    <a href="#about" class="text-muted hover:text-gold transition font-medium text-xs tracking-widest uppercase">About</a>
+                    <a href="#booking" class="bg-gold text-navy px-8 py-3 rounded-full font-bold hover:bg-goldHover transition duration-300 text-xs tracking-widest uppercase shadow-lg shadow-gold/20">Book Viewing</a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-white text-2xl focus:outline-none">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-navy border-t border-navyLight">
+            <div class="px-6 py-6 flex flex-col space-y-6">
+                <a href="#home" class="text-white text-lg font-medium tracking-widest uppercase">Home</a>
+                <a href="#properties" class="text-white text-lg font-medium tracking-widest uppercase">Properties</a>
+                <a href="#about" class="text-white text-lg font-medium tracking-widest uppercase">About</a>
+                <a href="#booking" class="bg-gold text-navy px-6 py-3 rounded-full text-center font-bold tracking-widest uppercase">Book Viewing</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center bg-black pt-20">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?q=80&w=2075&auto=format&fit=crop" alt="Luxury Real Estate" class="w-full h-full object-cover opacity-40">
+            <div class="absolute inset-0 bg-gradient-to-t from-navy via-navy/80 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-navy via-transparent to-transparent"></div>
+        </div>
+        
+        <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 w-full">
+            <div class="max-w-3xl">
+                <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-navyLight bg-navyLight/50 backdrop-blur-sm mb-8 reveal">
+                    <span class="w-2 h-2 rounded-full bg-gold animate-pulse"></span>
+                    <span class="text-xs font-medium tracking-widest text-gold uppercase">Your Trusted Real Estate Partner</span>
+                </div>
+                
+                <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-[1.1] mb-8 reveal" style="transition-delay: 100ms;">
+                    Find Your Dream <br> <span class="italic text-gold font-normal">Home.</span>
+                </h1>
+                
+                <p class="text-muted text-lg md:text-xl mb-10 max-w-xl font-light reveal" style="transition-delay: 200ms;">
+                    Discover premium properties, luxury shortlets, and smart investment opportunities in Lagos and Abuja with expert guidance from Realtor Aishat.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 reveal" style="transition-delay: 300ms;">
+                    <a href="#properties" class="bg-gold text-navy px-10 py-4 rounded-full font-bold hover:bg-goldHover transition duration-300 text-center tracking-wider text-sm uppercase shadow-lg shadow-gold/25">
+                        View Properties
+                    </a>
+                    <a href="#booking" class="border border-white/20 text-white px-10 py-4 rounded-full font-bold hover:bg-white hover:text-navy transition duration-300 text-center tracking-wider text-sm uppercase">
+                        Book a Viewing
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS / TRUST BANNER -->
+    <div class="bg-navyLight border-y border-navyLight py-10 relative z-20">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="reveal">
+                    <div class="font-serif text-4xl font-bold text-gold mb-2"><i class="fa-solid fa-house-chimney"></i></div>
+                    <div class="text-xs uppercase tracking-widest text-muted">Verified Listings</div>
+                </div>
+                <div class="reveal" style="transition-delay: 100ms;">
+                    <div class="font-serif text-4xl font-bold text-gold mb-2"><i class="fa-solid fa-handshake"></i></div>
+                    <div class="text-xs uppercase tracking-widest text-muted">Trusted Agent</div>
+                </div>
+                <div class="reveal" style="transition-delay: 200ms;">
+                    <div class="font-serif text-4xl font-bold text-gold mb-2"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="text-xs uppercase tracking-widest text-muted">Secure Deals</div>
+                </div>
+                <div class="reveal" style="transition-delay: 300ms;">
+                    <div class="font-serif text-4xl font-bold text-gold mb-2"><i class="fa-solid fa-star"></i></div>
+                    <div class="text-xs uppercase tracking-widest text-muted">5-Star Service</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROPERTIES SECTION (Digital Showroom) -->
+    <section id="properties" class="py-24 bg-navy relative">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <span class="text-gold font-semibold tracking-widest uppercase text-xs">Our Listings</span>
+                <h2 class="font-serif text-5xl md:text-6xl font-bold text-white mt-4">Featured <span class="italic text-gold font-normal">Properties</span></h2>
+                <p class="text-muted mt-4 max-w-2xl mx-auto">Browse our exclusive selection of homes and apartments available for sale, rent, and lease.</p>
+            </div>
+
+            <!-- Property Filter Tabs -->
+            <div class="flex justify-center gap-4 mb-12 flex-wrap reveal">
+                <button class="filter-btn bg-gold text-navy px-6 py-2 rounded-full font-bold text-xs tracking-wider uppercase transition" data-filter="all">All Properties</button>
+                <button class="filter-btn border border-gold/30 text-gold px-6 py-2 rounded-full font-bold text-xs tracking-wider uppercase hover:bg-gold hover:text-navy transition" data-filter="sale">For Sale</button>
+                <button class="filter-btn border border-gold/30 text-gold px-6 py-2 rounded-full font-bold text-xs tracking-wider uppercase hover:bg-gold hover:text-navy transition" data-filter="rent">For Rent</button>
+                <button class="filter-btn border border-gold/30 text-gold px-6 py-2 rounded-full font-bold text-xs tracking-wider uppercase hover:bg-gold hover:text-navy transition" data-filter="shortlet">Shortlets</button>
+            </div>
+
+            <!-- Property Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="property-grid">
+                <!-- Property 1 -->
+                <div class="property-card property-item bg-navyLight rounded-3xl overflow-hidden border border-navyLight group reveal" data-type="sale">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop" alt="Luxury Duplex Lekki" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 flex gap-2">
+                            <span class="bg-navy/80 backdrop-blur-md px-3 py-1 rounded-full border border-gold/30 text-gold text-xs font-bold tracking-wider">FOR SALE</span>
+                            <span class="bg-navy/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 text-white text-xs font-bold tracking-wider"><i class="fa-solid fa-location-dot mr-1"></i> LEKKI</span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="font-serif text-2xl font-bold text-white mb-2">5-Bedroom Smart Duplex</h3>
+                        <p class="text-muted text-sm mb-4 line-clamp-2">Fully detached smart home in Lekki Phase 1 with modern finishing and 24/7 security.</p>
+                        <div class="flex items-center gap-4 text-xs text-muted uppercase tracking-wider mb-6">
+                            <span><i class="fa-solid fa-bed mr-1 text-gold"></i> 5 Beds</span>
+                            <span><i class="fa-solid fa-bath mr-1 text-gold"></i> 5 Baths</span>
+                        </div>
+                        <div class="flex justify-between items-center border-t border-navy pt-6">
+                            <div>
+                                <span class="text-gold font-bold text-xl">₦250M</span>
+                            </div>
+                            <button onclick="selectProperty('5-Bedroom Smart Duplex (Lekki)')" class="bg-transparent border border-gold text-gold px-6 py-2.5 rounded-xl hover:bg-gold hover:text-navy transition font-bold text-xs tracking-wider uppercase">Book Inspection</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Property 2 -->
+                <div class="property-card property-item bg-navyLight rounded-3xl overflow-hidden border border-navyLight group reveal" data-type="rent" style="transition-delay: 100ms;">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=2070&auto=format&fit=crop" alt="Apartment for Rent Abuja" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 flex gap-2">
+                            <span class="bg-navy/80 backdrop-blur-md px-3 py-1 rounded-full border border-gold/30 text-gold text-xs font-bold tracking-wider">FOR RENT</span>
+                            <span class="bg-navy/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 text-white text-xs font-bold tracking-wider"><i class="fa-solid fa-location-dot mr-1"></i> ABUJA</span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="font-serif text-2xl font-bold text-white mb-2">3-Bedroom Luxury Apartment</h3>
+                        <p class="text-muted text-sm mb-4 line-clamp-2">Located in Wuse 2, Abuja. Features a fitted kitchen, ample parking, and water heater.</p>
+                        <div class="flex items-center gap-4 text-xs text-muted uppercase tracking-wider mb-6">
+                            <span><i class="fa-solid fa-bed mr-1 text-gold"></i> 3 Beds</span>
+                            <span><i class="fa-solid fa-bath mr-1 text-gold"></i> 3 Baths</span>
+                        </div>
+                        <div class="flex justify-between items-center border-t border-navy pt-6">
+                            <div>
+                                <span class="text-gold font-bold text-xl">₦15M / year</span>
+                            </div>
+                            <button onclick="selectProperty('3-Bedroom Luxury Apartment (Abuja)')" class="bg-transparent border border-gold text-gold px-6 py-2.5 rounded-xl hover:bg-gold hover:text-navy transition font-bold text-xs tracking-wider uppercase">Book Inspection</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Property 3 -->
+                <div class="property-card property-item bg-navyLight rounded-3xl overflow-hidden border border-navyLight group reveal" data-type="shortlet" style="transition-delay: 200ms;">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=2080&auto=format&fit=crop" alt="Shortlet Apartment" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 flex gap-2">
+                            <span class="bg-navy/80 backdrop-blur-md px-3 py-1 rounded-full border border-gold/30 text-gold text-xs font-bold tracking-wider">SHORTLET</span>
+                            <span class="bg-navy/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 text-white text-xs font-bold tracking-wider"><i class="fa-solid fa-location-dot mr-1"></i> IKOYI</span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="font-serif text-2xl font-bold text-white mb-2">The Executive Studio</h3>
+                        <p class="text-muted text-sm mb-4 line-clamp-2">A cozy, modern studio in Ikoyi. Perfect for business travellers and couples.</p>
+                        <div class="flex items-center gap-4 text-xs text-muted uppercase tracking-wider mb-6">
+                            <span><i class="fa-solid fa-bed mr-1 text-gold"></i> 1 Bed</span>
+                            <span><i class="fa-solid fa-bath mr-1 text-gold"></i> 1 Bath</span>
+                        </div>
+                        <div class="flex justify-between items-center border-t border-navy pt-6">
+                            <div>
+                                <span class="text-gold font-bold text-xl">₦80,000 / night</span>
+                            </div>
+                            <button onclick="selectProperty('The Executive Studio (Ikoyi)')" class="bg-transparent border border-gold text-gold px-6 py-2.5 rounded-xl hover:bg-gold hover:text-navy transition font-bold text-xs tracking-wider uppercase">Book Inspection</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Property 4 -->
+                <div class="property-card property-item bg-navyLight rounded-3xl overflow-hidden border border-navyLight group reveal" data-type="sale">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop" alt="Land for Sale" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 flex gap-2">
+                            <span class="bg-navy/80 backdrop-blur-md px-3 py-1 rounded-full border border-gold/30 text-gold text-xs font-bold tracking-wider">FOR SALE</span>
+                            <span class="bg-navy/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 text-white text-xs font-bold tracking-wider"><i class="fa-solid fa-location-dot mr-1"></i> AJAH</span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="font-serif text-2xl font-bold text-white mb-2">Commercial Land (600sqm)</h3>
+                        <p class="text-muted text-sm mb-4 line-clamp-2">Strategically located land facing the express road in Ajah. Perfect for business.</p>
+                        <div class="flex items-center gap-4 text-xs text-muted uppercase tracking-wider mb-6">
+                            <span><i class="fa-solid fa-ruler-combined mr-1 text-gold"></i> 600 SQM</span>
+                            <span><i class="fa-solid fa-file-contract mr-1 text-gold"></i> C of O</span>
+                        </div>
+                        <div class="flex justify-between items-center border-t border-navy pt-6">
+                            <div>
+                                <span class="text-gold font-bold text-xl">₦45M</span>
+                            </div>
+                            <button onclick="selectProperty('Commercial Land (Ajah)')" class="bg-transparent border border-gold text-gold px-6 py-2.5 rounded-xl hover:bg-gold hover:text-navy transition font-bold text-xs tracking-wider uppercase">Book Inspection</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Property 5 -->
+                <div class="property-card property-item bg-navyLight rounded-3xl overflow-hidden border border-navyLight group reveal" data-type="rent" style="transition-delay: 100ms;">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=2070&auto=format&fit=crop" alt="Apartment for Rent" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 flex gap-2">
+                            <span class="bg-navy/80 backdrop-blur-md px-3 py-1 rounded-full border border-gold/30 text-gold text-xs font-bold tracking-wider">FOR RENT</span>
+                            <span class="bg-navy/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 text-white text-xs font-bold tracking-wider"><i class="fa-solid fa-location-dot mr-1"></i> MAITAMA</span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="font-serif text-2xl font-bold text-white mb-2">2-Bedroom Serviced Apartment</h3>
+                        <p class="text-muted text-sm mb-4 line-clamp-2">Serviced apartment in Maitama with gym, pool, and 24/7 power supply.</p>
+                        <div class="flex items-center gap-4 text-xs text-muted uppercase tracking-wider mb-6">
+                            <span><i class="fa-solid fa-bed mr-1 text-gold"></i> 2 Beds</span>
+                            <span><i class="fa-solid fa-bath mr-1 text-gold"></i> 2 Baths</span>
+                        </div>
+                        <div class="flex justify-between items-center border-t border-navy pt-6">
+                            <div>
+                                <span class="text-gold font-bold text-xl">₦12M / year</span>
+                            </div>
+                            <button onclick="selectProperty('2-Bedroom Serviced Apartment (Maitama)')" class="bg-transparent border border-gold text-gold px-6 py-2.5 rounded-xl hover:bg-gold hover:text-navy transition font-bold text-xs tracking-wider uppercase">Book Inspection</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Property 6 -->
+                <div class="property-card property-item bg-navyLight rounded-3xl overflow-hidden border border-navyLight group reveal" data-type="shortlet" style="transition-delay: 200ms;">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2070&auto=format&fit=crop" alt="Shortlet Apartment" class="w-full h-full object-cover">
+                        <div class="absolute top-4 left-4 flex gap-2">
+                            <span class="bg-navy/80 backdrop-blur-md px-3 py-1 rounded-full border border-gold/30 text-gold text-xs font-bold tracking-wider">SHORTLET</span>
+                            <span class="bg-navy/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 text-white text-xs font-bold tracking-wider"><i class="fa-solid fa-location-dot mr-1"></i> VI</span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="font-serif text-2xl font-bold text-white mb-2">The Skyline Loft</h3>
+                        <p class="text-muted text-sm mb-4 line-clamp-2">Modern loft in Victoria Island with stunning views of the Lagos skyline.</p>
+                        <div class="flex items-center gap-4 text-xs text-muted uppercase tracking-wider mb-6">
+                            <span><i class="fa-solid fa-bed mr-1 text-gold"></i> 2 Beds</span>
+                            <span><i class="fa-solid fa-bath mr-1 text-gold"></i> 2 Baths</span>
+                        </div>
+                        <div class="flex justify-between items-center border-t border-navy pt-6">
+                            <div>
+                                <span class="text-gold font-bold text-xl">₦95,000 / night</span>
+                            </div>
+                            <button onclick="selectProperty('The Skyline Loft (VI)')" class="bg-transparent border border-gold text-gold px-6 py-2.5 rounded-xl hover:bg-gold hover:text-navy transition font-bold text-xs tracking-wider uppercase">Book Inspection</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" class="py-24 bg-navyLight border-y border-navyLight">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="relative reveal">
+                    <!-- Using a professional placeholder matching the screenshot context -->
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=2088&auto=format&fit=crop" alt="Realtor Aishat" class="rounded-3xl w-full h-[500px] object-cover border border-navyLight shadow-2xl">
+                    <div class="absolute -bottom-6 -left-6 bg-navy p-6 rounded-2xl border border-navyLight shadow-xl max-w-xs">
+                        <div class="flex items-center gap-4 mb-2">
+                            <i class="fa-brands fa-facebook text-2xl text-gold"></i>
+                            <span class="text-white font-bold">Realtor Aishat</span>
+                        </div>
+                        <p class="text-muted text-xs">Connect with me on Facebook for daily property updates and market insights.</p>
+                    </div>
+                </div>
+                <div class="reveal" style="transition-delay: 200ms;">
+                    <span class="text-gold font-semibold tracking-widest uppercase text-xs">About Me</span>
+                    <h2 class="font-serif text-4xl md:text-5xl font-bold text-white mt-4 mb-6">Meet Realtor Aishat</h2>
+                    <p class="text-muted text-lg mb-6 leading-relaxed">
+                        Hello! I am a dedicated and trusted real estate professional committed to helping you find the perfect property. Whether you are looking to buy your dream home, secure a lucrative investment, or find a comfortable shortlet, I am here to guide you every step of the way.
+                    </p>
+                    <p class="text-muted text-lg mb-8 leading-relaxed">
+                        I specialize in properties across <strong>Lagos and Abuja</strong>, ensuring you get the best value for your money with verified listings and transparent dealings.
+                    </p>
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-center gap-4 text-white">
+                            <i class="fa-solid fa-check-circle text-gold text-xl"></i>
+                            <span>Verified and genuine property listings</span>
+                        </div>
+                        <div class="flex items-center gap-4 text-white">
+                            <i class="fa-solid fa-check-circle text-gold text-xl"></i>
+                            <span>Expert negotiation and advisory</span>
+                        </div>
+                        <div class="flex items-center gap-4 text-white">
+                            <i class="fa-solid fa-check-circle text-gold text-xl"></i>
+                            <span>Seamless documentation & management</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SMART BOOKING & AUTOMATION SECTION -->
+    <section id="booking" class="py-24 bg-navy relative overflow-hidden">
+        <!-- Decorative Glow -->
+        <div class="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-gold/5 rounded-full blur-[150px] -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                
+                <!-- Left Info Side -->
+                <div class="reveal">
+                    <span class="text-gold font-semibold tracking-widest uppercase text-xs">Automated Booking</span>
+                    <h2 class="font-serif text-4xl md:text-5xl font-bold text-white mt-4 mb-8">Book a Property <br> <span class="italic text-gold font-normal">Inspection Instantly.</span></h2>
+                    <p class="text-muted text-lg mb-10 leading-relaxed font-light">
+                        Don't waste time with endless calls. Fill out the smart form, select the property you want to see, and the system will instantly connect you to me via WhatsApp to confirm your inspection.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-5">
+                            <div class="w-12 h-12 bg-navyLight border border-navyLight rounded-full flex items-center justify-center text-gold flex-shrink-0">
+                                <i class="fa-solid fa-phone text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white tracking-wide">Call or WhatsApp</h4>
+                                <a href="tel:+2348124191760" class="text-muted hover:text-white transition mt-1 block">+234 812 419 1760</a>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-5">
+                            <div class="w-12 h-12 bg-navyLight border border-navyLight rounded-full flex items-center justify-center text-gold flex-shrink-0">
+                                <i class="fa-brands fa-facebook text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white tracking-wide">Facebook</h4>
+                                <a href="#" target="_blank" class="text-muted hover:text-white transition mt-1 block">Realtor Aishat</a>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-5">
+                            <div class="w-12 h-12 bg-navyLight border border-navyLight rounded-full flex items-center justify-center text-gold flex-shrink-0">
+                                <i class="fa-solid fa-location-dot text-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white tracking-wide">Coverage Area</h4>
+                                <p class="text-muted mt-1">Lagos & Abuja, Nigeria</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Form Side (Automation) -->
+                <div class="bg-navy rounded-3xl shadow-2xl p-8 md:p-10 glass-panel relative overflow-hidden reveal" style="transition-delay: 200ms;">
+                    <!-- Decorative Corner -->
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-bl-full pointer-events-none"></div>
+
+                    <h3 class="font-serif text-3xl font-bold text-white mb-2">Book Inspection</h3>
+                    <p class="text-muted text-sm mb-8">Fill this out to send a direct WhatsApp message to Realtor Aishat.</p>
+                    
+                    <form id="bookingForm" class="space-y-6">
+                        <div>
+                            <label class="block text-muted text-xs font-medium mb-2 tracking-widest uppercase">Full Name</label>
+                            <input type="text" id="clientName" required class="w-full bg-navyLight border border-navyLight rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition" placeholder="e.g. John Doe">
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-muted text-xs font-medium mb-2 tracking-widest uppercase">Property of Interest</label>
+                                <select id="propertyType" required class="w-full bg-navyLight border border-navyLight rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition appearance-none cursor-pointer">
+                                    <option value="" disabled selected class="bg-navy">Select Property</option>
+                                    <option value="5-Bedroom Smart Duplex (Lekki)" class="bg-navy">5-Bedroom Smart Duplex (Lekki)</option>
+                                    <option value="3-Bedroom Luxury Apartment (Abuja)" class="bg-navy">3-Bedroom Luxury Apartment (Abuja)</option>
+                                    <option value="The Executive Studio (Ikoyi)" class="bg-navy">The Executive Studio (Ikoyi)</option>
+                                    <option value="Commercial Land (Ajah)" class="bg-navy">Commercial Land (Ajah)</option>
+                                    <option value="2-Bedroom Serviced Apartment (Maitama)" class="bg-navy">2-Bedroom Serviced Apartment (Maitama)</option>
+                                    <option value="The Skyline Loft (VI)" class="bg-navy">The Skyline Loft (VI)</option>
+                                    <option value="Other / General Enquiry" class="bg-navy">Other / General Enquiry</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-muted text-xs font-medium mb-2 tracking-widest uppercase">Preferred Date</label>
+                                <input type="date" id="inspectionDate" required class="w-full bg-navyLight border border-navyLight rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition [color-scheme:dark] cursor-pointer">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-muted text-xs font-medium mb-2 tracking-widest uppercase">Message / Questions (Optional)</label>
+                            <textarea id="messageDetails" rows="3" class="w-full bg-navyLight border border-navyLight rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold transition" placeholder="Any specific requirements..."></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full bg-gold text-navy font-bold py-4 rounded-xl hover:bg-goldHover transition duration-300 shadow-lg shadow-gold/20 flex items-center justify-center gap-3 mt-4">
+                            <i class="fa-brands fa-whatsapp text-xl"></i> Send Inspection Request
+                        </button>
+                        <p class="text-center text-xs text-muted mt-2">Clicking will open WhatsApp with your pre-filled details.</p>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-black text-white py-16 border-t border-navyLight">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div class="md:col-span-2">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-full border border-gold flex items-center justify-center bg-navyLight">
+                            <span class="font-serif font-bold text-sm text-gold">RA</span>
+                        </div>
+                        <div>
+                            <span class="font-serif font-bold text-lg tracking-widest text-white block leading-tight">REALTOR AISHAT</span>
+                            <span class="text-[0.55rem] tracking-[0.3em] text-gold uppercase">Real Estate Services</span>
+                        </div>
+                    </div>
+                    <p class="text-muted text-sm leading-relaxed max-w-sm">
+                        Your trusted real estate partner in Lagos and Abuja. We specialize in premium property sales, rentals, and shortlets with a commitment to excellence and transparency.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-6 uppercase tracking-widest text-xs">Quick Links</h4>
+                    <ul class="space-y-3 text-sm text-muted">
+                        <li><a href="#home" class="hover:text-gold transition">Home</a></li>
+                        <li><a href="#properties" class="hover:text-gold transition">Properties</a></li>
+                        <li><a href="#about" class="hover:text-gold transition">About Me</a></li>
+                        <li><a href="#booking" class="hover:text-gold transition">Book Inspection</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-6 uppercase tracking-widest text-xs">Contact Me</h4>
+                    <ul class="space-y-3 text-sm text-muted">
+                        <li><a href="tel:+2348124191760" class="hover:text-gold transition"><i class="fa-solid fa-phone mr-2 text-gold"></i> +234 812 419 1760</a></li>
+                        <li><a href="#" class="hover:text-gold transition"><i class="fa-brands fa-facebook mr-2 text-gold"></i> Realtor Aishat</a></li>
+                        <li><i class="fa-solid fa-location-dot mr-2 text-gold"></i> Lagos & Abuja, Nigeria</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-navyLight pt-8 text-center text-xs text-muted tracking-wider">
+                &copy; 2024 Realtor Aishat. All rights reserved. Designed for excellence.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // 1. Custom Cursor Logic
+        const cursor = document.querySelector('.cursor');
+        const follower = document.querySelector('.cursor-follower');
+
+        if (window.innerWidth > 768) {
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+                
+                setTimeout(() => {
+                    follower.style.left = e.clientX + 'px';
+                    follower.style.top = e.clientY + 'px';
+                }, 50);
+            });
+
+            const links = document.querySelectorAll('a, button, input, select, .property-card');
+            links.forEach(link => {
+                link.addEventListener('mouseenter', () => {
+                    cursor.style.width = '20px';
+                    cursor.style.height = '20px';
+                    cursor.style.background = 'transparent';
+                    cursor.style.border = '2px solid #D4AF37';
+                    follower.style.width = '70px';
+                    follower.style.height = '70px';
+                    follower.style.borderColor = '#D4AF37';
+                });
+                link.addEventListener('mouseleave', () => {
+                    cursor.style.width = '8px';
+                    cursor.style.height = '8px';
+                    cursor.style.background = '#D4AF37';
+                    cursor.style.border = 'none';
+                    follower.style.width = '40px';
+                    follower.style.height = '40px';
+                    follower.style.borderColor = 'rgba(212, 175, 55, 0.5)';
+                });
+            });
+        }
+
+        // 2. Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // 3. Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-navy/95', 'backdrop-blur-md', 'border-b', 'border-navyLight');
+                navbar.classList.remove('bg-transparent');
+            } else {
+                navbar.classList.remove('bg-navy/95', 'backdrop-blur-md', 'border-b', 'border-navyLight');
+                navbar.classList.add('bg-transparent');
+            }
+        });
+
+        // 4. Scroll Reveal Animation
+        const revealElements = document.querySelectorAll('.reveal');
+        
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            const elementVisible = 100;
+            
+            revealElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // Trigger once on load
+
+        // 5. PROPERTY FILTERING LOGIC
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const propertyItems = document.querySelectorAll('.property-item');
+        
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Active state styling
+                filterBtns.forEach(b => {
+                    b.classList.remove('bg-gold', 'text-navy');
+                    b.classList.add('border', 'border-gold/30', 'text-gold');
+                });
+                btn.classList.add('bg-gold', 'text-navy');
+                btn.classList.remove('border', 'border-gold/30', 'text-gold');
+
+                const filterValue = btn.getAttribute('data-filter');
+                
+                propertyItems.forEach(item => {
+                    if (filterValue === 'all' || item.getAttribute('data-type') === filterValue) {
+                        item.style.display = 'block';
+                        // Trigger a small animation
+                        item.style.opacity = '0';
+                        item.style.transform = 'translateY(20px)';
+                        setTimeout(() => {
+                            item.style.opacity = '1';
+                            item.style.transform = 'translateY(0)';
+                        }, 50);
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // 6. PROPERTY SELECTION AUTOMATION
+        function selectProperty(propertyName) {
+            const selectElement = document.getElementById('propertyType');
+            
+            // Find the matching option and select it
+            for (let i = 0; i < selectElement.options.length; i++) {
+                if (selectElement.options[i].value === propertyName) {
+                    selectElement.selectedIndex = i;
+                    break;
+                }
+            }
+            
+            // Smoothly scroll to the booking form
+            document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+            
+            // Flash the form field to show it was selected
+            selectElement.style.borderColor = '#D4AF37';
+            setTimeout(() => {
+                selectElement.style.borderColor = '#1C2541'; // Revert to default
+            }, 1500);
+        }
+
+        // 7. SMART WHATSAPP BOOKING AUTOMATION
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('clientName').value;
+            const propertyType = document.getElementById('propertyType').value;
+            const date = document.getElementById('inspectionDate').value;
+            const details = document.getElementById('messageDetails').value || 'No additional message provided.';
+            
+            // Format the date nicely
+            const formattedDate = new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            
+            // Construct the automated message
+            const message = `*New Inspection Booking - Realtor Aishat*%0A%0A` +
+                            `*Name:* ${name}%0A` +
+                            `*Property:* ${propertyType}%0A` +
+                            `*Preferred Date:* ${formattedDate}%0A%0A` +
+                            `*Message:* ${details}%0A%0A` +
+                            `Hello Aishat, I'd like to book this inspection. Please confirm the available time.`;
+            
+            // WhatsApp Number (Using the number from the screenshot: +234 812 419 1760)
+            const phoneNumber = '2348124191760'; 
+            
+            // Open WhatsApp with the automated message
+            const whatsappURL = `https://wa.me/${phoneNumber}?text=${message}`;
+            window.open(whatsappURL, '_blank');
+            
+            // Reset form and show confirmation
+            this.reset();
+            alert('Your inspection request is being sent to Realtor Aishat on WhatsApp. We look forward to showing you the property!');
+        });
+    </script>
+</body>
+  </html>
